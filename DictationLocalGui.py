@@ -20,16 +20,6 @@
 
 # v0.6 Stand: 03-08-2021
 
-# Installation:
-# XDOTool installieren mit 
-# sudo dnf install xdotool
-#
-# Developer Tools installieren, damit pyaudio installiert werden kann
-# sudo dnf groupinstall "Development Tools" "Development Libraries"
-# sudo dnf install portaudio-devel
-# pip install pyaudio
-# pip install speech_recognition
-
 # --------------------------------------------------------------------------------------------------------------
 # Use: die Aufnahme wird durch den Sprachbefehl "exit" beendet
 # Skript auf einen Hotkey legen: in Gnome ein Tastaturkürzel hinzufügen und den Befehl
@@ -52,7 +42,6 @@
 #
 # Developer Tools installieren, damit pyaudio installiert werden kann
 # sudo dnf groupinstall "Development Tools" "Development Libraries"
-# 
 # sudo dnf install portaudio-devel
 # pip install pyaudio
 # pip install speech_recognition
