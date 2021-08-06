@@ -19,7 +19,7 @@
 # startet. 
 # Bsp. Skript
 # #!/usr/bin/env bash
-# python3 /home/max/Skripte/DictationLocalGui.py
+# python3 /home/USERNAME/Skripte/DictationLocalGui.py
 # bash
 #
 # Installation (hier Fedora Linux, ansonsten den distroeigenen Paketmanager entsprechend benutzen):
@@ -43,7 +43,7 @@
 import speech_recognition as sr
 import subprocess
 import time
-import tkinter, tkinter.scrolledtext
+import tkinter
 import sys
 
 # Funktion Schaltfläche Ende
@@ -57,32 +57,18 @@ def dictate():
             with sr.Microphone() as source:
                 listener = sr.Recognizer()
                 print('...')
-                #sr.adjust_for_ambient_noise(mic, duration=0.2)
                 voice = listener.listen(source)
                 text = listener.recognize_google(voice, language="de-DE")
                 print(text) # gibt den Text zusätzlich im Terminal aus, wenn Skript mit Terminal gestartet wird
                 if text == 'exit': # Ende des Diktats - Sprechpause!
                     break
-                subprocess.call(["xdotool", "type", text, " "]) # Leerzeichen => neuer Satz beginnt in LibreOffice mit Großbuchstaben
-                #subprocess.call(["wtype", "type", text, " "])
-                # text_area.insert('end', text)                
+                subprocess.call(["xdotool", "type", text, " "]) # Leerzeichen => neuer Satz beginnt in LibreOffice mit Großbuchstaben                             
         except:
             pass
 
 # Hauptfenster
 main = tkinter.Tk()
 main.title(string='Diktieren mit der Google API')
-
-# Creating scrolled text area widget
-'''text_area = tkinter.scrolledtext.ScrolledText(main, 
-                                      wrap = tkinter.WORD, 
-                                      width = 40, 
-                                      height = 10, 
-                                      font = ("Arial",
-                                              15))
-  
-text_area.focus() # Placing cursor in the text area
-text_area.pack()'''
 
 # Schaltfläche Diktat starten
 bstart = tkinter.Button(main, width = 15, height = 3, text = "Diktat starten", command = dictate)
