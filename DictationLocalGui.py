@@ -1,25 +1,6 @@
 #!/usr/bin/python3
 
-# ##### BEGIN GPL LICENSE BLOCK #####
-#
-#  This program is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 2
-#  of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-#
-# ##### END GPL LICENSE BLOCK #####
-
-# v0.6 Stand: 03-08-2021
-
+# v0.7 Stand: 11.12.2021
 # --------------------------------------------------------------------------------------------------------------
 # Use: die Aufnahme wird durch den Sprachbefehl "exit" beendet
 # Skript auf einen Hotkey legen: in Gnome ein Tastaturkürzel hinzufügen und den Befehl
@@ -27,10 +8,10 @@
 # startet. 
 # Bsp. Skript
 # #!/usr/bin/env bash
-# python3 /home/USERNAME/Skripte/DictationLocalGui.py
+# python3 /home/max/Skripte/DictationLocalGui.py
 # bash
 #
-# Installation (hier Fedora Linux, ansonsten den distroeigenen Paketmanager entsprechend benutzen):
+# Installation: (hier Fedora Linux, ansonsten den distroeigenen Paketmanager benutzen):
 # pip installieren, das vereinfacht das Installieren von Packages und Modulen
 # sudo dnf install python3-pip
 #
@@ -42,54 +23,67 @@
 #
 # Developer Tools installieren, damit pyaudio installiert werden kann
 # sudo dnf groupinstall "Development Tools" "Development Libraries"
+# 
 # sudo dnf install portaudio-devel
 # pip install pyaudio
-# pip install speech_recognition
+# pip install SpeechRecognition
 # --------------------------------------------------------------------------------------------------------------
 
 import speech_recognition as sr
-import subprocess
+import subprocess # für den Aufruf von XDOTool (nur unter X11, ansonsten Ydotool unter Wayland)
 import time
 import tkinter
+from tkinter import scrolledtext 
 import sys
 
-# Funktion Schaltfläche Ende
+# Funktion für die Schaltfläche Ende
 def ende():
     main.destroy()
 
-# Funktion Diktieren
+# Funktion für das eigentliche Diktieren
 def dictate():
     while True:
         try:
             with sr.Microphone() as source:
                 listener = sr.Recognizer()
-                print('...')
+                #print('...')
                 voice = listener.listen(source)
+                #sr.adjust_for_ambient_noise(mic, duration=0.2)
                 text = listener.recognize_google(voice, language="de-DE")
-                print(text) # gibt den Text zusätzlich im Terminal aus, wenn Skript mit Terminal gestartet wird
-                if text == 'exit': # Ende des Diktats - Sprechpause!
+                #print(text) # gibt den Text im Terminal aus, wenn Skript mit Terminal gestartet wird
+                if text == 'exit': # funktioniert nur mit Sprechpause
                     break
-                subprocess.call(["xdotool", "type", text, " "]) # Leerzeichen => neuer Satz beginnt in LibreOffice mit Großbuchstaben                             
+                subprocess.call(["xdotool", "type", text, " "]) # Leerzeichen => neuer Satz beginnt in LibreOffice mit Großbuchstaben
+                #text_area.insert('end', text)                
         except:
             pass
 
 # Hauptfenster
 main = tkinter.Tk()
-main.title(string='Diktieren mit der Google API')
+main.title(string='')
+
+#Creating scrolled text area widget
+'''text_area = tkinter.scrolledtext.ScrolledText(main, 
+                                      wrap = tkinter.WORD, 
+                                      width = 40, 
+                                      height = 10, 
+                                      font = ("Arial",
+                                              15))
+  
+text_area.focus() # Placing cursor in the text area
+text_area.pack()'''
 
 # Schaltfläche Diktat starten
-bstart = tkinter.Button(main, width = 15, height = 3, text = "Diktat starten", command = dictate)
-bstart["font"] = "Arial 34 bold"
+bstart = tkinter.Button(main, width = 3, height = 2, text = "REC", command = dictate)
+bstart["font"] = "Arial 22 bold"
 bstart.pack()
 
-# Label Hinweis zum Beenden des Diktats
-tlabel = tkinter.Label(main, text = "-- sag 'Exit' zum Beenden des Diktats --")
-tlabel["font"] = "Arial 9"
-tlabel.pack()
-
 # Schaltfläche Ende
-bende = tkinter.Button(main, text = "Ende", command = ende)
+bende = tkinter.Button(main, width = 6, text = "Ende", command = ende)
 bende.pack()
+
+#Make the window jump above all
+main.attributes('-topmost',True)
 
 # Endlosschleife für das Hauptfenster
 main.mainloop()
